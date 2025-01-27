@@ -2,11 +2,6 @@ import streamlit as st
 import requests
 import datetime
 
-import os
-
-st.write("Répertoire courant :", os.getcwd())  # Affiche le répertoire courant
-st.write("Image trouvée :", os.path.exists("assets/Fake.jpg"))  # Affiche True si le fichier est trouvé
-
 # Fonction principale pour la page "FormulaireComplet"
 def app():
     # Fixe la page active à "FormulaireComplet"
