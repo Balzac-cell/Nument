@@ -5,7 +5,7 @@ import datetime
 import os
 
 st.write("Répertoire courant :", os.getcwd())  # Affiche le répertoire courant
-st.write("Image trouvée :", os.path.exists("../../assets/Fake.jpg"))  # Affiche True si le fichier est trouvé
+st.write("Image trouvée :", os.path.exists("assets/Fake.jpg"))  # Affiche True si le fichier est trouvé
 
 # Fonction principale pour la page "FormulaireComplet"
 def app():
