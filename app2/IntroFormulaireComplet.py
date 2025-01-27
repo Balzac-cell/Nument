@@ -2,30 +2,22 @@ import streamlit as st
 
 
 def app():
-    # Centrer le contenu avec une disposition générée par des colonnes
-    col1, col2, col3 = st.columns([1, 2, 1])  # Les colonnes permettent de centrer le contenu
+    # Contenu de la page
+    col1, col2, col3 = st.columns([1, 2, 1])
 
     with col2:
-        # Titre centré
         st.title("Test de Saisie Complète")
-
-        # Texte informatif avec des blocs explicatifs
         st.subheader(
             """
             Bonjour et bienvenue dans le test de saisie complète
-            
+
             **Objectif** :  
-            Saisissez les données manquantes d'une facture de santé exactement comme vous le faites habituellement.  
+            Saisissez les données manquantes d'une facture de santé exactement comme vous le faites habituellement.
             """
         )
+        st.write("Appuyez sur le bouton **Commencer la saisie** pour lancer le test.")
 
-        # Espacement vertical pour bien séparer les éléments
-        st.write("Appuyez sur le bouton **commencer la saisie** pour lancer le test")
-        st.write("")
-        st.write("")
-
-
-        # Bouton placé et centré
+        # Bouton pour changer vers la page du formulaire complet
         if st.button("Commencer la saisie"):
-            st.session_state["page"] = "FormulaireComplet"  # Change la page actuelle
-            st.rerun()  # Recharge la page pour appliquer le changement
+            st.session_state["page"] = "FormulaireComplet"
+            st.rerun()  # Recharger l'application

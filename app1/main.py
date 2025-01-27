@@ -4,56 +4,69 @@ import streamlit as st
 st.set_page_config(
     page_title="Application Streamlit",
     layout="wide",
-    initial_sidebar_state="collapsed"  # Barre latérale masquée par défaut
+    initial_sidebar_state="auto"
 )
 
 # Initialisation des variables dans `st.session_state`
 if "is_admin" not in st.session_state:
-    st.session_state["is_admin"] = False
+    st.session_state["is_admin"] = False  # Flag pour l'accès admin (login rapide)
 if "page" not in st.session_state:
     st.session_state["page"] = "Welcome"
 
-# Système d'authentification simple (admin)
-ADMIN_PASSWORD = "admin"  # Mot de passe pour accéder aux pages avec barre latérale
+# Mot de passe pour l'accès rapide admin
+ADMIN_PASSWORD = "admin"  # Définir un mot de passe pour le login rapide
 
-# Authentification admin
-if not st.session_state["is_admin"]:
-    with st.expander("Authentification admin (facultatif)"):
-        password = st.text_input("Mot de passe admin", type="password")
-        if st.button("Se connecter"):
-            if password == ADMIN_PASSWORD:
-                st.session_state["is_admin"] = True
-                st.rerun()  # Recharge la page après authentification
-            else:
-                st.error("Mot de passe incorrect.")
+# Barre d'authentification rapide
+with st.expander("Connexion rapide admin (facultatif)"):
+    password = st.text_input("Entrez le mot de passe admin pour un accès rapide", type="password")
+    if st.button("Se connecter"):
+        if password == ADMIN_PASSWORD:
+            st.session_state["is_admin"] = True
+            st.success("Connexion réussie ! Accès admin activé.")
+            st.rerun()  # Recharge la page pour activer admin
+        else:
+            st.error("Mot de passe incorrect.")
 
-# Gestion de la navigation
+# Gestion de la navigation (admin ou utilisateur classique)
+st.sidebar.title("Navigation")
 if st.session_state["is_admin"]:
-    st.sidebar.title("Navigation")
+    st.sidebar.write("Mode **admin** activé.")  # Petit message pour mode admin
     selected_page = st.sidebar.radio(
         "Choisissez votre page",
         ["Welcome", "page1", "IntroFormulaireComplet", "FormulaireComplet", "FinFormulaireComplet"],
-        index=["Welcome", "page1", "IntroFormulaireComplet", "FormulaireComplet", "FinFormulaireComplet"].index(st.session_state["page"]),
+        index=["Welcome", "page1", "IntroFormulaireComplet", "FormulaireComplet", "FinFormulaireComplet"].index(
+            st.session_state["page"]),
         key="navigation"
     )
-    if st.session_state["page"] != selected_page:
-        st.session_state["page"] = selected_page
-        st.rerun()  # Recharge la page après un changement de page
+else:
+    selected_page = st.sidebar.radio(  # Version simplifiée pour utilisateur sans admin
+        "Pages accessibles",
+        ["Welcome", "IntroFormulaireComplet"],
+        index=["Welcome", "IntroFormulaireComplet"].index(st.session_state["page"]),
+        key="navigation"
+    )
 
-# Affichage des pages en fonction de la sélection
+if st.session_state["page"] != selected_page:
+    st.session_state["page"] = selected_page
+    st.rerun()  # Reload pour synchroniser la navigation globale
+
+# Gestion des pages
 if st.session_state["page"] == "Welcome":
     st.title("Bienvenue sur la Welcome page")
-    st.write("Bienvenue dans l'application !")
-elif st.session_state["page"] == "page1":
+    st.write("Bienvenue dans l'application ! Naviguez à l'aide du menu sur la gauche.")
+elif st.session_state["page"] == "page1" and st.session_state["is_admin"]:
     import page1
+
     page1.app()
 elif st.session_state["page"] == "IntroFormulaireComplet":
     import IntroFormulaireComplet
-    IntroFormulaireComplet.app()
-elif st.session_state["page"] == "FormulaireComplet":
-    import FormulaireComplet
-    FormulaireComplet.app()
-elif st.session_state["page"] == "FinFormulaireComplet":
-    import FinFormulaireComplet
-    FinFormulaireComplet.app()
 
+    IntroFormulaireComplet.app()
+elif st.session_state["page"] == "FormulaireComplet" and st.session_state["is_admin"]:
+    import FormulaireComplet
+
+    FormulaireComplet.app()
+elif st.session_state["page"] == "FinFormulaireComplet" and st.session_state["is_admin"]:
+    import FinFormulaireComplet
+
+    FinFormulaireComplet.app()
