@@ -36,6 +36,9 @@ def app():
         st.header("Obser.")
         au = st.text_input("au")
 
+        st.header("Tableau")
+        st.write("voir plus bas ⬇️")
+
     # Valeurs par défaut pour le tableau
     column_titles = ["DESIGNATION", "TARIF", "BASE DE REMBOURSEMENT", "TAUX", "A VOTRE CHARGE"]
     column_data = {
