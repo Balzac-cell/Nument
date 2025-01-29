@@ -2,18 +2,18 @@ import streamlit as st
 import requests
 import datetime
 
+
 # Fonction principale pour la page "FormulaireComplet"
 def app():
-    # Fixe la page active à "FormulaireComplet"
     st.session_state["page"] = "FormulaireComplet"
 
-    # Enregistrer l'heure d'affichage de la page au premier affichage
+    # Enregistrer l'heure d'affichage de la page
     if "display_time" not in st.session_state:
         st.session_state["display_time"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # Ajouter un état pour l'envoi des données et la redirection
+    # Ajouter un état pour l'envoi des données
     if "data_sent" not in st.session_state:
-        st.session_state["data_sent"] = False  # Par défaut, aucune donnée n'a été envoyée
+        st.session_state["data_sent"] = False
 
     # Création de deux colonnes pour le formulaire et l'image
     col1, col2 = st.columns(2)
@@ -22,7 +22,6 @@ def app():
     with col1:
         st.title("AVIS DES SOMMES A PAYER")
 
-        # Champs de formulaire
         st.header("Données métier")
         NdeTitre = st.text_input("N° de Titre", value="123456", disabled=True)
         Executoire = st.text_input("Emis et rendu exécutoire le", value="16/02/22")
@@ -48,7 +47,7 @@ def app():
         risque = st.text_input("RISQUE", value="10")
         CG = st.text_input("CG", value="10")
 
-    # Gestion facile des valeurs par défaut pour le tableau
+    # Valeurs par défaut pour le tableau
     column_titles = ["DESIGNATION", "TARIF", "BASE DE REMBOURSEMENT", "TAUX", "A VOTRE CHARGE"]
     column_data = {
         "DESIGNATION": ["ADI PU", "ADI PU", "TOTAL"],
@@ -58,14 +57,13 @@ def app():
         "A VOTRE CHARGE": ["20,70", "0,22", "20,90"]
     }
 
-    # Gérer les tableaux dans session_state
     if "table_data" not in st.session_state:
         st.session_state["table_data"] = [
             [column_data[title][row] for title in column_titles]
-            for row in range(3)  # 3 lignes
+            for row in range(3)
         ]
 
-    # Affichage interactif du tableau
+    # Affichage du tableau interactif
     for row_idx in range(3):
         row_cols = st.columns(len(column_titles))
         for col_idx, col in enumerate(row_cols):
@@ -77,19 +75,18 @@ def app():
 
     # Bouton "Terminer"
     if st.button("**Terminer**") and not st.session_state["data_sent"]:
-        # Récupérer les données du tableau et les champs
         base_remboursement_cell = st.session_state["table_data"][1][2]
         taux_cell = st.session_state["table_data"][1][3]
         charge_cell = st.session_state["table_data"][2][4]
 
-        # Tenter de récupérer l'IP utilisateur
+        # Récupérer l'IP utilisateur
         try:
             response = requests.get("https://api64.ipify.org?format=json")
             ip_address = response.json().get("ip") if response.status_code == 200 else "IP inconnue"
         except Exception:
-            ip_address = "Erreur lors de la récupération de l'IP"
+            ip_address = "Erreur IP"
 
-        # Préparer le payload pour Supabase
+        # Préparer les données pour Supabase
         payload = {
             "ip_address": ip_address,
             "nom_du_patient": NomDuPatient,
@@ -102,32 +99,44 @@ def app():
             "DisplayTime": st.session_state["display_time"]
         }
 
-        # Envoi des données
+        # Envoi des données à Supabase
         SUPABASE_URL = "https://dlhhyjclkvsmivlhraaz.supabase.co"
         SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRsaGh5amNsa3ZzbWl2bGhyYWF6Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczNzU2NjIxNiwiZXhwIjoyMDUzMTQyMjE2fQ.-bXX5wmoBZB22PXaLNcIv457ZueifpG7HZNc7tiJtrQ"
         endpoint = f"{SUPABASE_URL}/rest/v1/OldUI"
         headers = {
             "apikey": SUPABASE_KEY,
             "Authorization": f"Bearer {SUPABASE_KEY}",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Prefer": "return=representation"
         }
 
         try:
             supabase_response = requests.post(endpoint, json=payload, headers=headers)
+
+            # Vérifie que la réponse est bien en JSON
             if supabase_response.status_code == 201:
-                st.success("Données envoyées avec succès ! 🚀")
-                st.session_state["data_sent"] = True  # Marquer les données comme envoyées
+                try:
+                    data = supabase_response.json()
+                    if data and isinstance(data, list) and "id" in data[0]:
+                        st.session_state["uuid"] = data[0]["id"]
+                        st.success("Données envoyées avec succès !")
+                        st.session_state["data_sent"] = True
+                    else:
+                        st.error("Erreur : L'UUID n'a pas été renvoyé par Supabase.")
+                except Exception:
+                    st.error("Erreur : La réponse de Supabase n'est pas valide.")
+                    st.write(supabase_response.text)
             else:
                 st.error(f"Erreur lors de l'envoi : {supabase_response.status_code}")
                 st.write("Détails :", supabase_response.text)
         except Exception as e:
-            st.error(f"Erreur : {e}")
+            st.error(f"Erreur lors de la connexion à Supabase : {e}")
 
     # Redirection une fois les données envoyées
     if st.session_state["data_sent"]:
         st.write("Redirection vers la page de fin...")
         st.session_state["page"] = "FinFormulaireComplet"
-        st.rerun()  # Recharge la page avec la bonne redirection
+        st.rerun()
 
     # Affichage de l'image dans la colonne de droite
     with col2:

@@ -1,48 +1,59 @@
 import streamlit as st
+import requests
 
+# Configuration Supabase
+SUPABASE_URL = "https://dlhhyjclkvsmivlhraaz.supabase.co"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRsaGh5amNsa3ZzbWl2bGhyYWF6Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczNzU2NjIxNiwiZXhwIjoyMDUzMTQyMjE2fQ.-bXX5wmoBZB22PXaLNcIv457ZueifpG7HZNc7tiJtrQ"
 
 def app():
-    # Centrer le contenu avec des colonnes
-    col1, col2, col3 = st.columns([1, 2, 1])  # Centrage du contenu
+    st.title("Fin du formulaire")
 
-    with col2:
-        # Titre centré
-        st.title("Feedback sur l'expérience")
+    # Vérifie que l'UUID (id) est bien disponible
+    if "uuid" not in st.session_state:
+        st.error(" Erreur : Aucun UUID trouvé. Revenez à la page précédente pour générer les données.")
+        st.stop()  # Stoppe l'exécution ici
 
-        # Texte d'explication
-        st.write(
-            """
-            ### Merci d'avoir participé à cette collecte de données.  
-            Nous souhaitons comprendre si cette expérience reflète votre quotidien.  
-            Merci de prendre un moment pour évaluer et commenter !
-            """
-        )
+    uuid = st.session_state["uuid"]  # Récupère l'identifiant unique
 
-        # Slider pour noter l'expérience
-        st.write("### Notez votre expérience \n (1 - Pas du tout similaire, 5 - Très similaire)")
-        slider_value = st.slider(
-            "À quel point cette expérience représente-t-elle ce que vous faites quotidiennement ?",
-            min_value=1,
-            max_value=5,
-            value=3,
-            step=1
-        )
+    # Formulaire de feedback utilisateur
+    st.write("### Indiquez votre niveau d'expérience en saisie (en mois)")
+    slider_value = st.slider(
+        "Nombre de mois d'expérience en saisie :",
+        min_value=0,
+        max_value=120,  # Exemple : 10 ans = 120 mois
+        value=12,  # Par défaut, 1 an
+        step=1
+    )
 
-        # Espacement
-        st.write("")
+    st.write("### Laissez un commentaire concernant votre expérience :")
+    commentaire = st.text_area(
+        "Vos remarques ou suggestions :",
+        placeholder="Votre commentaire ici..."
+    )
 
-        # Zone de texte pour les commentaires
-        st.write("### Laissez un commentaire libre")
-        commentaire = st.text_area(
-            "Ajoutez vos remarques ou suggestions pour améliorer l'expérience :",
-            placeholder="Votre commentaire ici..."
-        )
+    # Bouton pour envoyer les données à Supabase
+    if st.button("Terminer "):
+        update_payload = {
+            "Exp": slider_value,  # Niveau d'expérience
+            "Comments": commentaire  # Commentaires
+        }
 
-        # Espacement
-        st.write("")
+        endpoint = f"{SUPABASE_URL}/rest/v1/OldUI?id=eq.{uuid}"
+        headers = {
+            "apikey": SUPABASE_KEY,
+            "Authorization": f"Bearer {SUPABASE_KEY}",
+            "Content-Type": "application/json",
+            "Prefer": "return=minimal"  # Optimise la requête
+        }
 
-        # Bouton "Envoyer"
-        if st.button("Envoyer"):
-            # Logic à connecter plus tard
-            st.write("Merci pour vos retours ! 🚀")
-            # Vous pourrez enregistrer slider_value et commentaire ici (connexion à une base de données ou fichier)
+        # Envoi des données
+        try:
+            response = requests.patch(endpoint, json=update_payload, headers=headers)
+
+            if response.status_code == 204:  # 204 = Modification réussie
+                st.success(" Données sont envoyées, vous avez terminé le teste. Merci ! ! 🚀")
+            else:
+                st.error(f" Erreur lors de la mise à jour : {response.status_code}")
+                st.write("Détails :", response.text)
+        except Exception as e:
+            st.error(f" Erreur lors de la connexion à Supabase : {e}")
