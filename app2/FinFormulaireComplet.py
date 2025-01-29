@@ -8,21 +8,27 @@ SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 def app():
     st.title("Fin du formulaire")
 
-    # Vérifie que l'UUID (id) est bien disponible
+    # Vérifie que l'UUID est bien disponible
     if "uuid" not in st.session_state:
-        st.error(" Erreur : Aucun UUID trouvé. Revenez à la page précédente pour générer les données.")
-        st.stop()  # Stoppe l'exécution ici
+        st.error("Erreur : Aucun UUID trouvé. Revenez à la page précédente.")
+        st.stop()
 
-    uuid = st.session_state["uuid"]  # Récupère l'identifiant unique
+    uuid = st.session_state["uuid"]
 
     # Formulaire de feedback utilisateur
     st.write("### Indiquez votre niveau d'expérience en saisie (en mois)")
     slider_value = st.slider(
         "Nombre de mois d'expérience en saisie :",
         min_value=0,
-        max_value=120,  # Exemple : 10 ans = 120 mois
-        value=12,  # Par défaut, 1 an
+        max_value=120,
+        value=12,
         step=1
+    )
+
+    st.write("### Choisissez un pseudo si vous le souhaitez")
+    pseudo = st.text_input(
+        "Entrez votre pseudo :",
+        placeholder="Ex: Chuck Norris"
     )
 
     st.write("### Laissez un commentaire concernant votre expérience :")
@@ -32,10 +38,11 @@ def app():
     )
 
     # Bouton pour envoyer les données à Supabase
-    if st.button("Terminer "):
+    if st.button("Terminer"):
         update_payload = {
             "Exp": slider_value,  # Niveau d'expérience
-            "Comments": commentaire  # Commentaires
+            "Comments": commentaire,  # Commentaires
+            "Pseudo": pseudo  # Pseudo enregistré
         }
 
         endpoint = f"{SUPABASE_URL}/rest/v1/OldUI?id=eq.{uuid}"
@@ -43,7 +50,7 @@ def app():
             "apikey": SUPABASE_KEY,
             "Authorization": f"Bearer {SUPABASE_KEY}",
             "Content-Type": "application/json",
-            "Prefer": "return=minimal"  # Optimise la requête
+            "Prefer": "return=minimal"
         }
 
         # Envoi des données
@@ -51,9 +58,9 @@ def app():
             response = requests.patch(endpoint, json=update_payload, headers=headers)
 
             if response.status_code == 204:  # 204 = Modification réussie
-                st.success(" Données sont envoyées, vous avez terminé le teste. Merci ! ! 🚀")
+                st.success("Données envoyées, Votre teste est terminé. Merci !")
             else:
-                st.error(f" Erreur lors de la mise à jour : {response.status_code}")
+                st.error(f"Erreur lors de la mise à jour : {response.status_code}")
                 st.write("Détails :", response.text)
         except Exception as e:
-            st.error(f" Erreur lors de la connexion à Supabase : {e}")
+            st.error(f"Erreur lors de la connexion à Supabase : {e}")
