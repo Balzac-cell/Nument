@@ -44,8 +44,13 @@ def app():
 
         if TAUX:
 
-            # initialisation
-            update_payload = {"TAUX": TAUX}
+            # Capturer le datetime actuel (horodatage du moment de l'envoi)
+            click_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        # initialisation
+            update_payload = {"TAUX": TAUX,
+                              "DTT" : click_time
+                              }
             endpoint = f"{SUPABASE_URL}/rest/v1/NewUI?id=eq.{uuid}"
             headers = {
                 "apikey": SUPABASE_KEY,

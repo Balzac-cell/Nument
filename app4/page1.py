@@ -7,8 +7,8 @@ def app():
         st.session_state["page"] = "IntroFormulaireComplet"
 
     # Enregistrer l'heure d'affichage de la page
-    if "display_time" not in st.session_state:
-        st.session_state["display_time"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    if "DT1" not in st.session_state:
+        st.session_state["DT1"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # Ajouter un état pour l'envoi des données
     if "data_sent" not in st.session_state:
@@ -47,7 +47,8 @@ def app():
             # Préparer les données pour Supabase (OptimisedOldUI)
             payload = {
                 "nom_du_patient": st.session_state["NomDuPatient"],  # Utilisation du champ sauvegardé
-                "ip_address": ip_address  # Ajout de l'adresse IP récupérée ou par défaut
+                "ip_address": ip_address,  # Ajout de l'adresse IP récupérée ou par défaut
+                "DT1" : st.session_state["DT1"]
             }
 
             # Envoi des données vers OptimisedOldUI
