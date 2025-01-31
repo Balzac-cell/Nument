@@ -40,7 +40,7 @@ def app():
         except FileNotFoundError:
             st.warning("Image non trouvée.")
         st.markdown("")
-        TAUX = st.text_input("Saisissez la donnée encadrée en vert et appuyez sur entrer", key="TAUX")
+        TAUX = st.text_input("Saisissez la donnée encadrée en vert et appuyez sur entrer", key="TAUX", autocomplete="off")
 
         if TAUX:
 
