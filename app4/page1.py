@@ -28,11 +28,11 @@ def app():
         st.header("Nom")
 
         try:
-            st.image("app4/assets/Split/Name/NaneB.jpg", use_container_width=True)
+            st.image("app4/assets/Split/Name/NaneB.jpg", use_container_width=False, width=250)
         except FileNotFoundError:
             st.warning("Image non trouvée.")
         st.markdown("")
-        NomDuPatient = st.text_input("Saisissez la donnée encadrée en vert et appuyez sur entrer", key="NomDuPatient")
+        NomDuPatient = st.text_input("Saisissez la donnée encadrée en vert et appuyez sur entrer", key="NomDuPatient", autocomplete="off")
 
         # Envoie de données"
         if NomDuPatient and not st.session_state["data_sent"]:

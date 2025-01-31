@@ -40,7 +40,7 @@ def app():
         except FileNotFoundError:
             st.warning("Image non trouvée.")
         st.markdown("")
-        BDR = st.text_input("Saisissez la donnée encadrée en vert et appuyez sur entrer", key="BDR")
+        BDR = st.text_input("Saisissez la donnée encadrée en vert et appuyez sur entrer", key="BDR", autocomplete="off")
 
         if BDR:
 

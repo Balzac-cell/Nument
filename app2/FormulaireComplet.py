@@ -32,18 +32,18 @@ def app():
         Entre = st.text_input("ENTRE(E)", value="01/02/2022 08 H 30")
         Sorti = st.text_input("SORTI(E)", value="01/02/2022 14 H 30")
         Adresse = st.text_input("ADRESSE", value="Rue du Valhala")
-        NomDuPatient = st.text_input("Nom du patient")
+        NomDuPatient = st.text_input("Nom du patient", autocomplete="off")
 
         st.header("Assuré")
         Nom = st.text_input("Nom", value="MOURAD MOURAD")
         Ben = st.text_input("Ben.", value="01")
-        Num = st.text_input("N°")
-        Org = st.text_input("Org.")
+        Num = st.text_input("N°", autocomplete="off")
+        Org = st.text_input("Org.", autocomplete="off")
 
         st.header("Obser.")
         PatientObs = st.text_input("Patient", value="MOURAD MOURAD")
         du = st.text_input("du", value="01/02/2022")
-        au = st.text_input("au")
+        au = st.text_input("au", autocomplete="off")
         risque = st.text_input("RISQUE", value="10")
         CG = st.text_input("CG", value="10")
 
@@ -70,7 +70,7 @@ def app():
             st.session_state["table_data"][row_idx][col_idx] = col.text_input(
                 label="",
                 value=st.session_state["table_data"][row_idx][col_idx],
-                key=f"cell_{row_idx}_{col_idx}"
+                key=f"cell_{row_idx}_{col_idx}", autocomplete="off"
             )
 
     # Bouton "Terminer"

@@ -27,14 +27,14 @@ def app():
         st.title("AVIS DES SOMMES A PAYER")
 
         st.header("Patient")
-        NomDuPatient = st.text_input("Nom du patient")
+        NomDuPatient = st.text_input("Nom du patient", autocomplete="off")
 
         st.header("Assuré")
-        Num = st.text_input("N°")
-        Org = st.text_input("Org.")
+        Num = st.text_input("N°", autocomplete="off")
+        Org = st.text_input("Org.", autocomplete="off")
 
         st.header("Obser.")
-        au = st.text_input("au")
+        au = st.text_input("au", autocomplete="off")
 
         st.header("Tableau")
         st.write("Voir plus bas ⬇️ ")
@@ -62,7 +62,7 @@ def app():
             st.session_state["table_data"][row_idx][col_idx] = col.text_input(
                 label="",
                 value=st.session_state["table_data"][row_idx][col_idx],
-                key=f"cell_{row_idx}_{col_idx}"
+                key=f"cell_{row_idx}_{col_idx}", autocomplete="off"
             )
 
     # Bouton "Terminer"

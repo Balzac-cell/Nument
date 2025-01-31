@@ -36,11 +36,11 @@ def app():
         st.header("Org.")
 
         try:
-            st.image("app4/assets/Split/Org/Org.jpg", use_container_width=True)
+            st.image("app4/assets/Split/Org/Org.jpg", use_container_width=False, width=250)
         except FileNotFoundError:
             st.warning("Image non trouvée.")
         st.markdown("")
-        Org = st.text_input("Saisissez la donnée encadrée en vert et appuyez sur entrer", key="Org.")
+        Org = st.text_input("Saisissez la donnée encadrée en vert et appuyez sur entrer", key="Org.", autocomplete="off")
 
 
         if Org :

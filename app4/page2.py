@@ -36,11 +36,11 @@ def app():
         st.header("N°")
 
         try:
-            st.image("app4/assets/Split/Number/Number.jpg", use_container_width=True)
+            st.image("app4/assets/Split/Number/Number.jpg", use_container_width=False, width=250)
         except FileNotFoundError:
             st.warning("Image non trouvée.")
         st.markdown("")
-        Number = st.text_input("Saisissez la donnée encadrée en vert et appuyez sur entrer", key="N°")
+        Number = st.text_input("Saisissez la donnée encadrée en vert et appuyez sur entrer", key="N°", autocomplete="off")
 
 
         if Number :
