@@ -37,7 +37,7 @@ def app():
         au = st.text_input("au")
 
         st.header("Tableau")
-        st.write("voir plus bas ⬇️")
+        st.write("Voir plus bas ⬇️ ")
 
     # Valeurs par défaut pour le tableau
     column_titles = ["DESIGNATION", "TARIF", "BASE DE REMBOURSEMENT", "TAUX", "A VOTRE CHARGE"]
