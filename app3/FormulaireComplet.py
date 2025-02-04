@@ -37,94 +37,93 @@ def app():
         au = st.text_input("au", autocomplete="off")
 
         st.header("Tableau")
-        st.write("Voir plus bas ⬇️ ")
 
-    # Valeurs par défaut pour le tableau
-    column_titles = ["DESIGNATION", "TARIF", "BASE DE REMBOURSEMENT", "TAUX", "A VOTRE CHARGE"]
-    column_data = {
-        "DESIGNATION": ["ADI PU", "ADI PU", "TOTAL"],
-        "TARIF": ["69,00", "0,75", ""],
-        "BASE DE REMBOURSEMENT": ["69,00", "", ""],
-        "TAUX": ["30", "", ""],
-        "A VOTRE CHARGE": ["20,70", "0,22", "20,90"]
-    }
-
-    if "table_data" not in st.session_state:
-        st.session_state["table_data"] = [
-            [column_data[title][row] for title in column_titles]
-            for row in range(3)
-        ]
-
-    # Affichage du tableau interactif
-    for row_idx in range(2):
-        row_cols = st.columns(len(column_titles))
-        for col_idx, col in enumerate(row_cols):
-            st.session_state["table_data"][row_idx][col_idx] = col.text_input(
-                label="",
-                value=st.session_state["table_data"][row_idx][col_idx],
-                key=f"cell_{row_idx}_{col_idx}", autocomplete="off"
-            )
-
-    # Bouton "Terminer"
-    if st.button("**Terminer**") and not st.session_state["data_sent"]:
-        base_remboursement_cell = st.session_state["table_data"][1][2]  # 1ère ligne, colonne 1
-        taux_cell = st.session_state["table_data"][1][3]  # 1ère ligne, colonne 2
-
-        # Récupérer l'IP utilisateur
-        try:
-            response = requests.get("https://api64.ipify.org?format=json")
-            ip_address = response.json().get("ip") if response.status_code == 200 else "IP inconnue"
-        except Exception:
-            ip_address = "Erreur IP"
-
-        # Préparer les données pour Supabase (OptimisedOldUI)
-        payload = {
-            "ip_address": ip_address,
-            "nom_du_patient": NomDuPatient,
-            "N°": Num,
-            "Org.": Org,
-            "au": au,
-            "BDR": base_remboursement_cell,
-            "TAUX": taux_cell,
-            "DisplayTime": st.session_state["display_time"]
+        # Valeurs par défaut pour le tableau
+        column_titles = ["DESIGNATION", "TARIF", "BASE DE REMBOURSEMENT", "TAUX", "A VOTRE CHARGE"]
+        column_data = {
+            "DESIGNATION": ["ADI PU", "ADI PU", "TOTAL"],
+            "TARIF": ["69,00", "0,75", ""],
+            "BASE DE REMBOURSEMENT": ["69,00", "", ""],
+            "TAUX": ["30", "", ""],
+            "A VOTRE CHARGE": ["20,70", "0,22", "20,90"]
         }
 
-        # Envoi des données vers OptimisedOldUI
-        endpoint = f"{SUPABASE_URL}/rest/v1/OptimisedOldUI"
-        headers = {
-            "apikey": SUPABASE_KEY,
-            "Authorization": f"Bearer {SUPABASE_KEY}",
-            "Content-Type": "application/json",
-            "Prefer": "return=representation"
-        }
+        if "table_data" not in st.session_state:
+            st.session_state["table_data"] = [
+                [column_data[title][row] for title in column_titles]
+                for row in range(3)
+            ]
 
-        try:
-            supabase_response = requests.post(endpoint, json=payload, headers=headers)
+        # Affichage du tableau interactif
+        for row_idx in range(2):
+            row_cols = st.columns(len(column_titles))
+            for col_idx, col in enumerate(row_cols):
+                st.session_state["table_data"][row_idx][col_idx] = col.text_input(
+                    label="",
+                    value=st.session_state["table_data"][row_idx][col_idx],
+                    key=f"cell_{row_idx}_{col_idx}", autocomplete="off"
+                )
 
-            # Vérifie que la réponse est bien en JSON
-            if supabase_response.status_code == 201:
-                try:
-                    data = supabase_response.json()
-                    if data and isinstance(data, list) and "id" in data[0]:
-                        st.session_state["uuid"] = data[0]["id"]
-                        st.success("Données envoyées avec succès !")
-                        st.session_state["data_sent"] = True
-                    else:
-                        st.error("Erreur : L'UUID n'a pas été renvoyé par Supabase.")
-                except Exception:
-                    st.error("Erreur : La réponse de Supabase n'est pas valide.")
-                    st.write(supabase_response.text)
-            else:
-                st.error(f"Erreur lors de l'envoi : {supabase_response.status_code}")
-                st.write("Détails :", supabase_response.text)
-        except Exception as e:
-            st.error(f"Erreur lors de la connexion à Supabase : {e}")
+        # Bouton "Terminer"
+        if st.button("**Terminer**") and not st.session_state["data_sent"]:
+            base_remboursement_cell = st.session_state["table_data"][1][2]  # 1ère ligne, colonne 1
+            taux_cell = st.session_state["table_data"][1][3]  # 1ère ligne, colonne 2
 
-    # Redirection une fois les données envoyées
-    if st.session_state["data_sent"]:
-        st.write("Redirection vers la page de fin...")
-        st.session_state["page"] = "FinFormulaireComplet"
-        st.rerun()
+            # Récupérer l'IP utilisateur
+            try:
+                response = requests.get("https://api64.ipify.org?format=json")
+                ip_address = response.json().get("ip") if response.status_code == 200 else "IP inconnue"
+            except Exception:
+                ip_address = "Erreur IP"
+
+            # Préparer les données pour Supabase (OptimisedOldUI)
+            payload = {
+                "ip_address": ip_address,
+                "nom_du_patient": NomDuPatient,
+                "N°": Num,
+                "Org.": Org,
+                "au": au,
+                "BDR": base_remboursement_cell,
+                "TAUX": taux_cell,
+                "DisplayTime": st.session_state["display_time"]
+            }
+
+            # Envoi des données vers OptimisedOldUI
+            endpoint = f"{SUPABASE_URL}/rest/v1/OptimisedOldUI"
+            headers = {
+                "apikey": SUPABASE_KEY,
+                "Authorization": f"Bearer {SUPABASE_KEY}",
+                "Content-Type": "application/json",
+                "Prefer": "return=representation"
+            }
+
+            try:
+                supabase_response = requests.post(endpoint, json=payload, headers=headers)
+
+                # Vérifie que la réponse est bien en JSON
+                if supabase_response.status_code == 201:
+                    try:
+                        data = supabase_response.json()
+                        if data and isinstance(data, list) and "id" in data[0]:
+                            st.session_state["uuid"] = data[0]["id"]
+                            st.success("Données envoyées avec succès !")
+                            st.session_state["data_sent"] = True
+                        else:
+                            st.error("Erreur : L'UUID n'a pas été renvoyé par Supabase.")
+                    except Exception:
+                        st.error("Erreur : La réponse de Supabase n'est pas valide.")
+                        st.write(supabase_response.text)
+                else:
+                    st.error(f"Erreur lors de l'envoi : {supabase_response.status_code}")
+                    st.write("Détails :", supabase_response.text)
+            except Exception as e:
+                st.error(f"Erreur lors de la connexion à Supabase : {e}")
+
+        # Redirection une fois les données envoyées
+        if st.session_state["data_sent"]:
+            st.write("Redirection vers la page de fin...")
+            st.session_state["page"] = "FinFormulaireComplet"
+            st.rerun()
 
     # Affichage de l'image dans la colonne de droite
     with col2:
