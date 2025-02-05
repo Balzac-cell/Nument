@@ -11,6 +11,19 @@ SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 def app():
     st.session_state["page"] = "FormulaireComplet"
 
+    st.markdown("""
+        <style>
+            .highlight-label {
+                font-size: 20px;                    /* Taille plus grande pour le label */
+                font-weight: bold;                  /* Label en gras */
+                color: red;                         /* Couleur rouge pour attirer l'attention */
+            }
+            input[value=""] {
+                border: 3px solid red;                        /* Couleur rouge pour attirer l'attention */
+            }
+        </style>
+    """, unsafe_allow_html=True)
+
     # Enregistrer l'heure d'affichage de la page
     if "display_time" not in st.session_state:
         st.session_state["display_time"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
