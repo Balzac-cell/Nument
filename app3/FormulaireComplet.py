@@ -41,33 +41,40 @@ def app():
         # Valeurs par défaut pour le tableau
         column_titles = ["DESIGNATION", "TARIF", "BASE DE REMBOURSEMENT", "TAUX", "A VOTRE CHARGE"]
         column_data = {
-            "DESIGNATION": ["ADI PU", "ADI PU", "TOTAL"],
-            "TARIF": ["69,00", "0,75", ""],
-            "BASE DE REMBOURSEMENT": ["69,00", "", ""],
-            "TAUX": ["30", "", ""],
-            "A VOTRE CHARGE": ["20,70", "0,22", "20,90"]
+            "DESIGNATION": ["Désignation", "ADI PU", "ADI PU", "TOTAL"],
+            "TARIF": ["Tarifs", "69,00", "0,75", "-"],
+            "BASE DE REMBOURSEMENT": ["BDR", "69,00", "", "-"],
+            "TAUX": ["Taux", "30", "", "-"],
+            "A VOTRE CHARGE": ["AVC", "20,70", "0,22", "20,92"]
         }
 
         if "table_data" not in st.session_state:
             st.session_state["table_data"] = [
                 [column_data[title][row] for title in column_titles]
-                for row in range(3)
+                for row in range(4)
             ]
 
-        # Affichage du tableau interactif
-        for row_idx in range(2):
-            row_cols = st.columns(len(column_titles))
-            for col_idx, col in enumerate(row_cols):
+        # Boucle pour afficher le tableau
+        for row_idx in range(len(st.session_state["table_data"])):  # Parcourir chaque ligne
+            row_cols = st.columns(len(column_titles))  # Nombre de colonnes par ligne
+            for col_idx, col in enumerate(row_cols):  # Parcourir chaque cellule dans une ligne
+                # Seules les cellules vides sont éditables
+                is_editable = st.session_state["table_data"][row_idx][col_idx] == ""
+
+                # Afficher la cellule avec l'édition conditionnelle
                 st.session_state["table_data"][row_idx][col_idx] = col.text_input(
                     label="",
                     value=st.session_state["table_data"][row_idx][col_idx],
-                    key=f"cell_{row_idx}_{col_idx}", autocomplete="off"
+                    key=f"cell_{row_idx}_{col_idx}",
+                    disabled=not is_editable,  # Activer uniquement si la cellule est vide
+                    autocomplete="off"
                 )
 
         # Bouton "Terminer"
         if st.button("**Terminer**") and not st.session_state["data_sent"]:
-            base_remboursement_cell = st.session_state["table_data"][1][2]  # 1ère ligne, colonne 1
-            taux_cell = st.session_state["table_data"][1][3]  # 1ère ligne, colonne 2
+            base_remboursement_cell = st.session_state["table_data"][2][2]
+            taux_cell = st.session_state["table_data"][2][3]
+            charge_cell = st.session_state["table_data"][3][4]
 
             # Récupérer l'IP utilisateur
             try:

@@ -19,7 +19,7 @@ def app():
     SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRsaGh5amNsa3ZzbWl2bGhyYWF6Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczNzU2NjIxNiwiZXhwIjoyMDUzMTQyMjE2fQ.-bXX5wmoBZB22PXaLNcIv457ZueifpG7HZNc7tiJtrQ"
 
     # Création de deux colonnes pour le formulaire et l'image
-    col1, col2 = st.columns([2, 1])
+    col1, col2 = st.columns([1, 1])
 
     # Colonne de gauche : formulaire
     with col1:
@@ -88,6 +88,7 @@ def app():
     with col2:
         try:
             st.markdown("Facture de santé")
-            st.image("app4/assets/Split/Name/SplitName.jpg", caption="Bloc 1 sur 6", width=400)
+            st.image("app4/assets/Split/Name/SplitName.jpg", caption="Bloc 1 sur 6", use_container_width=True
+)
         except FileNotFoundError:
             st.warning("Image non trouvée.")
