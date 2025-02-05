@@ -76,15 +76,17 @@ def app():
                 for row in range(4)
             ]
 
-        # Affichage du tableau interactif
-        st.header("Tableau")
-        for row_idx in range(4):
-            row_cols = st.columns(len(column_titles))
-            for col_idx, col in enumerate(row_cols):
+        for row_idx in range(4):  # Boucle sur chaque ligne
+            row_cols = st.columns(len(column_titles))  # Création des colonnes pour cette ligne
+            for col_idx, col in enumerate(row_cols):  # Boucle sur chaque cellule/colonne
+                # Rendre la première ligne et la première colonne non éditables
+                is_editable = not (row_idx == 0 or col_idx == 0)
                 st.session_state["table_data"][row_idx][col_idx] = col.text_input(
                     label="",
                     value=st.session_state["table_data"][row_idx][col_idx],
-                    key=f"cell_{row_idx}_{col_idx}", autocomplete="off"
+                    key=f"cell_{row_idx}_{col_idx}",
+                    disabled=not is_editable,  # Désactive la cellule si dans la première ligne ou colonne
+                    autocomplete="off"
                 )
 
         # Bouton "Terminer"
