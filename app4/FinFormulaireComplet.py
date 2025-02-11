@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import datetime
 
 # Configuration Supabase
 SUPABASE_URL = "https://dlhhyjclkvsmivlhraaz.supabase.co"
@@ -7,6 +8,10 @@ SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 
 def app():
     st.title("Fin du formulaire")
+
+    # Enregistrer l'heure d'affichage de la page
+    if "DT2" not in st.session_state:
+        st.session_state["DT2"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # Vérifie que l'UUID est bien disponible
     if "uuid" not in st.session_state:
@@ -51,7 +56,8 @@ def app():
             "Exp": slider_value,  # Niveau d'expérience
             "Comments": commentaire,  # Commentaires
             "Pseudo": pseudo,  # Pseudo enregistré
-            "Note": note_experience  # Envoi de la note dans la colonne "Note"
+            "Note": note_experience,  # Envoi de la note dans la colonne "Note"
+            "DT2": st.session_state["DT2"]
         }
 
         endpoint = f"{SUPABASE_URL}/rest/v1/NewUI?id=eq.{uuid}"
