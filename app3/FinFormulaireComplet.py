@@ -25,14 +25,6 @@ def app():
         step=1
     )
 
-    # Champs supplémentaires : Note pour l'expérience utilisateur
-    st.write("### Donnez une note à votre expérience utilisateur (0 = Mauvaise, 5 = Excellente)")
-    note_experience = st.radio(
-        "Comment votre expérience utilisateur se compare-t-elle à vos attentes habituelles ?",
-        options=[0, 1, 2, 3, 4, 5],  # Options de note de 0 à 5
-        index=3  # Par défaut : 3 (convenable)
-    )
-
     st.write("### Choisissez un pseudo si vous le souhaitez")
     pseudo = st.text_input(
         "Entrez votre pseudo :",
@@ -50,12 +42,10 @@ def app():
         update_payload = {
             "Exp": slider_value,  # Niveau d'expérience
             "Comments": commentaire,  # Commentaires
-            "Pseudo": pseudo,  # Pseudo enregistré
-            "Note": note_experience  # Envoi de la note dans la colonne "Note"
+            "Pseudo": pseudo  # Pseudo enregistré
         }
 
         endpoint = f"{SUPABASE_URL}/rest/v1/OptimisedOldUI?id=eq.{uuid}"
-
         headers = {
             "apikey": SUPABASE_KEY,
             "Authorization": f"Bearer {SUPABASE_KEY}",
@@ -69,6 +59,9 @@ def app():
 
             if response.status_code == 204:  # 204 = Modification réussie
                 st.success("Données envoyées, Votre teste est terminé. Merci !")
+                st.session_state["data_sent"] = True
+                st.session_state["page"] = "Fin"  # Rediriger vers nouvelle page
+                st.rerun()
             else:
                 st.error(f"Erreur lors de la mise à jour : {response.status_code}")
                 st.write("Détails :", response.text)

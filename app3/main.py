@@ -10,6 +10,9 @@ st.set_page_config(
 import IntroFormulaireComplet
 import FormulaireComplet
 import FinFormulaireComplet
+import FormulaireID_Recto
+import FormulaireID_Verso
+import Fin
 
 
 # Initialiser la navigation dans la variable session_state
@@ -21,5 +24,11 @@ if st.session_state["page"] == "IntroFormulaireComplet":
     IntroFormulaireComplet.app()
 elif st.session_state["page"] == "FormulaireComplet":
     FormulaireComplet.app()
+elif st.session_state["page"] == "FormulaireID_Recto":
+    FormulaireID_Recto.app()
+elif st.session_state["page"] == "FormulaireID_Verso":
+    FormulaireID_Verso.app()
 elif st.session_state["page"] == "FinFormulaireComplet":
     FinFormulaireComplet.app()
+elif st.session_state["page"] == "Fin":
+    Fin.app()
