@@ -7,18 +7,24 @@ import datetime
 def app():
     st.session_state["page"] = "FormulaireComplet"
 
-    st.markdown("""
+    st.markdown(
+        """
+        <script>
+        window.scrollTo(0, 0);
+        </script>
         <style>
             .highlight-label {
-                font-size: 20px;                    /* Taille plus grande pour le label */
-                font-weight: bold;                  /* Label en gras */
-                color: red;                         /* Couleur rouge pour attirer l'attention */
+                font-size: 20px;
+                font-weight: bold;
+                color: red;
             }
             input[value=""] {
-                border: 3px solid red;                        /* Couleur rouge pour attirer l'attention */
+                border: 3px solid red;
             }
         </style>
-    """, unsafe_allow_html=True)
+        """,
+        unsafe_allow_html=True
+    )
 
     # Enregistrer l'heure d'affichage de la page
     if "display_time" not in st.session_state:
@@ -36,7 +42,7 @@ def app():
         st.title("AVIS DES SOMMES A PAYER")
 
         st.header("Données métier")
-        NdeTitre = st.text_input("N° de Titre", value="123456", disabled=True)
+        NdeTitre = st.text_input("N° de Titre", value="123456")
         Executoire = st.text_input("Emis et rendu exécutoire le", value="16/02/22")
         Exercice = st.text_input("Exercice", value="2022")
 
@@ -150,8 +156,8 @@ def app():
 
         # Redirection une fois les données envoyées
         if st.session_state["data_sent"]:
-            st.write("Redirection vers la page de fin...")
-            st.session_state["page"] = "FinFormulaireComplet"
+            st.write("Redirection vers une nouvelle page")
+            st.session_state["page"] = "FormulaireID_Recto"
             st.rerun()
 
     # Affichage de l'image dans la colonne de droite
