@@ -147,6 +147,6 @@ def app():
     # Affichage de l'image dans la colonne de droite
     with col2:
         try:
-            st.image("app1/assets/Fake.jpg", caption="Facture de santé", use_container_width=True)
+            st.image("app3/assets/Fake.jpg", caption="Facture de santé", use_container_width=True)
         except FileNotFoundError:
             st.warning("Image non trouvée.")

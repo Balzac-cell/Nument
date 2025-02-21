@@ -19,7 +19,8 @@ def app():
     st.markdown(
         """
         <script>
-        window.scrollTo(0, 0);
+        const ready = fn => document.readyState !== 'loading' ? fn() : document.addEventListener('DOMContentLoaded', fn);
+        ready(document.getElementsByTagName("h1")[0].scrollIntoViewIfNeeded());
         </script>
         <style>
             .highlight-label {
@@ -103,6 +104,6 @@ def app():
     # Affichage de l'image dans la colonne de droite
     with col2:
         try:
-            st.image("app2/assets/ID_Verso.jpg", caption="ID verso", use_container_width=True)
+            st.image("app3/assets/ID_Verso.jpg", caption="ID verso", use_container_width=True)
         except FileNotFoundError:
             st.warning("Image non trouvée.")

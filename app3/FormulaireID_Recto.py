@@ -66,7 +66,7 @@ def app():
 
 
         # Bouton "Terminer"
-        if st.button("Terminer"):
+        if st.button("Terminer", on_click="document.getElementsByTagName('h1')[0].scrollIntoViewIfNeeded()"):
 
             # initialisation
             update_payload = {
@@ -104,6 +104,6 @@ def app():
     # Affichage de l'image dans la colonne de droite
     with col2:
         try:
-            st.image("app2/assets/ID_Recto.jpg", caption="ID recto", use_container_width=True)
+            st.image("app3/assets/ID_Recto.jpg", caption="ID recto", use_container_width=True)
         except FileNotFoundError:
             st.warning("Image non trouvée.")
