@@ -14,10 +14,6 @@ def app():
 
     uuid = st.session_state["uuid"]
 
-    # Enregistrer l'heure d'affichage de la page
-    if "display_time" not in st.session_state:
-        st.session_state["display_time"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
     # Ajouter un état pour l'envoi des données
     if "data_sent" not in st.session_state:
         st.session_state["data_sent"] = False
@@ -59,7 +55,7 @@ def app():
                 response = requests.patch(endpoint, json=update_payload, headers=headers)
 
                 if response.status_code == 204:  # 204 = Modification réussie
-                    st.success("Données envoyées, Votre teste est terminé. Merci !")
+                    st.success("")
                     st.session_state["data_sent"] = True
                     st.session_state["page"] = "page5"  # Rediriger vers page4
                     st.rerun()
@@ -73,7 +69,7 @@ def app():
     with col2:
         try:
             st.markdown("Facture de santé")
-            st.image("app4/assets/Split/Au/SplitAu.jpg", caption="Bloc 4 sur 6", use_container_width=True
+            st.image("app4/assets/Split/Au/SplitAu.jpg", use_container_width=True
 )
         except FileNotFoundError:
             st.warning("Image non trouvée.")

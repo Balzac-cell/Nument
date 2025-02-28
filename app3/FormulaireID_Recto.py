@@ -6,6 +6,10 @@ import datetime
 # Fonction principale pour la page "FormulaireID_Recto"
 def app():
 
+    st.html(
+        "<p><span style='text-decoration: line-through double red;'>Oops</span>!</p>"
+    )
+
     if "page" not in st.session_state:
         st.session_state["page"] = "IntroFormulaireComplet"  # État par défaut
 
@@ -66,7 +70,7 @@ def app():
 
 
         # Bouton "Terminer"
-        if st.button("Terminer", on_click="document.getElementsByTagName('h1')[0].scrollIntoViewIfNeeded()"):
+        if st.button("Terminer"):
 
             # initialisation
             update_payload = {

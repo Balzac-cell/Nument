@@ -69,7 +69,7 @@ def app():
                         data = supabase_response.json()
                         if data and isinstance(data, list) and "id" in data[0]:
                             st.session_state["uuid"] = data[0]["id"]
-                            st.success("Données envoyées avec succès !")
+                            st.success("")
                             st.session_state["data_sent"] = True
                             st.session_state["page"] = "page2"  # Mettre à jour pour la redirection
                             st.rerun()  # Recharger pour afficher la page 2
@@ -88,7 +88,7 @@ def app():
     with col2:
         try:
             st.markdown("Facture de santé")
-            st.image("app4/assets/Split/Name/SplitName.jpg", caption="Bloc 1 sur 6", use_container_width=True
+            st.image("app4/assets/Split/Name/SplitName.jpg", use_container_width=True
 )
         except FileNotFoundError:
             st.warning("Image non trouvée.")

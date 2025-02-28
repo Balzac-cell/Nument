@@ -75,6 +75,9 @@ def app():
 
             if response.status_code == 204:  # 204 = Modification réussie
                 st.success("Données envoyées, Votre teste est terminé. Merci !")
+                st.session_state["data_sent"] = True
+                st.session_state["page"] = "Fin"  # Rediriger vers nouvelle page
+                st.rerun()
             else:
                 st.error(f"Erreur lors de la mise à jour : {response.status_code}")
                 st.write("Détails :", response.text)
