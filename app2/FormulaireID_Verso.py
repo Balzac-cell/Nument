@@ -108,6 +108,6 @@ def app():
     # Affichage de l'image dans la colonne de droite
     with col2:
         try:
-            st.image("app2/assets/ID_Verso.jpg", caption="ID verso", use_container_width=True)
+            st.image("app3/assets/ID_Verso.jpg", caption="ID verso", use_container_width=True)
         except FileNotFoundError:
             st.warning("Image non trouvée.")
